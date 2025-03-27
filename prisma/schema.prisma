@@ -12,3 +12,13 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+model Tournament {
+  id       String  @id @default(uuid())
+  name     String  @db.VarChar(50)
+  creator  String  @db.VarChar(50)
+  location String  @db.VarChar(50)
+  prize    String? @db.VarChar(50)
+  startDate DateTime
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(6)
+}
