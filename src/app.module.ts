@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
+import { TournamentsModule } from './tournament/tournament.module';
+
 @Module({
-  imports: [],
+  imports: [TournamentsModule],
 })
 export class AppModule {}

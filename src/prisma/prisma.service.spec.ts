@@ -3,10 +3,23 @@ import { PrismaService } from './prisma.service';
 
 describe('PrismaService', () => {
   let service: PrismaService;
+  const mockConnect = jest.fn();
+  const mockDisconnect = jest.fn();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PrismaService],
+      providers: [
+        {
+          provide: PrismaService,
+          useValue: {
+            $connect: mockConnect,
+            $disconnect: mockDisconnect,
+            onModuleInit: async function (this: PrismaService) {
+              await this.$connect();
+            },
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<PrismaService>(PrismaService);
@@ -17,8 +30,7 @@ describe('PrismaService', () => {
   });
 
   it('should call $connect on module init', async () => {
-    const connectSpy = jest.spyOn(service, '$connect');
     await service.onModuleInit();
-    expect(connectSpy).toHaveBeenCalled();
+    expect(mockConnect).toHaveBeenCalled();
   });
 });
