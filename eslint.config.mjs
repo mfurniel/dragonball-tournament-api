@@ -41,6 +41,8 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
+      'spaced-comment': ['error', 'always'],
+      'no-warning-comments': ['warn', { 'terms': ['todo', 'fixme'], 'location': 'start' }]
     },
   },
 );
