@@ -2,7 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TournamentController } from './tournament.controller';
 import { TournamentService } from './tournament.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { PaginationRequestDto } from 'src/common/pagination/dto/pagination-request.dto';
+import { PaginationRequestDto } from '../common/pagination/dto/pagination-request.dto';
+import { FeatureFlagGuard } from '../common/features-flags/feature-flag.guard';
+import { Reflector } from '@nestjs/core';
+import { FeatureFlagsService } from '../common/features-flags/feature-flags.service';
 
 describe('TournamentsController', () => {
   let controller: TournamentController;
@@ -10,7 +13,18 @@ describe('TournamentsController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TournamentController],
-      providers: [TournamentService, PrismaService],
+      providers: [
+        TournamentService,
+        PrismaService,
+        FeatureFlagGuard,
+        Reflector,
+        {
+          provide: FeatureFlagsService,
+          useValue: {
+            isFeatureEnabled: jest.fn().mockReturnValue(true),
+          },
+        },
+      ],
     }).compile();
 
     controller = module.get<TournamentController>(TournamentController);
@@ -35,7 +49,6 @@ describe('TournamentsController', () => {
 
     const result = await controller.getAllTournaments(paginationDto);
 
-    // Aquí puedes verificar que la respuesta esté formateada correctamente
     expect(result).toHaveProperty('tournaments');
     expect(result).toHaveProperty('totalCount');
     expect(result).toHaveProperty('itemsPage');
