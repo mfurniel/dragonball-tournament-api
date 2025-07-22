@@ -40,7 +40,7 @@ export class TournamentController {
   @ApiOperation({ summary: 'Get Tournament for ID' })
   @FeatureFlag('FEATURE_TOURNAMENTS_GET_TOURNAMENT')
   @UseGuards(FeatureFlagGuard)
-  @UseInterceptors(ApiFormatter, PaginationInterceptor)
+  @UseInterceptors(ApiFormatter)
   getTournament(@Param('id') id: string) {
     return this.tournamentService.getTournament(id);
   }
