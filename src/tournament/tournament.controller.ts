@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -16,6 +17,8 @@ import { FeatureFlagGuard } from '../common/features-flags/feature-flag.guard';
 import { FeatureFlag } from '../common/features-flags/feature-flag.decorator';
 import { ApiTags, ApiOperation, ApiOkResponse } from '@nestjs/swagger';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
+import { UpdateTournamentDto } from './dto/update-tournament.dto';
+
 @ApiTags('Tournaments')
 @Controller('tournaments')
 export class TournamentController {
@@ -49,5 +52,17 @@ export class TournamentController {
   @UseInterceptors(ApiFormatter)
   createTournament(@Body() dataTournament: CreateTournamentDto) {
     return this.tournamentService.createTournament(dataTournament);
+  }
+
+  @Patch('/:id')
+  @ApiOperation({ summary: 'Edit Tournament for ID' })
+  @FeatureFlag('FEATURE_TOURNAMENTS_UPDATE_TOURNAMENT')
+  @UseGuards(FeatureFlagGuard)
+  @UseInterceptors(ApiFormatter)
+  updateTournament(
+    @Param('id') id: string,
+    @Body() dataTournament: UpdateTournamentDto,
+  ) {
+    return this.tournamentService.updateTournament(id, dataTournament);
   }
 }

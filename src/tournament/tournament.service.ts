@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaginationRequestDto } from '../common/pagination/dto/pagination-request.dto';
 import { TournamentsGetAllDto } from '../common/pagination/dto/get-all-responses/tournaments-get-all.dto';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
+import { UpdateTournamentDto } from './dto/update-tournament.dto';
 
 @Injectable()
 export class TournamentService {
@@ -30,10 +31,13 @@ export class TournamentService {
   }
 
   async getTournament(id: string) {
-    const data = await this.prisma.tournament.findUnique({
+    const tournament = await this.prisma.tournament.findUnique({
       where: { id },
     });
-    return data;
+    if (!tournament) {
+      throw new NotFoundException(`Tournament with ID ${id} not found`);
+    }
+    return tournament;
   }
 
   async createTournament(dataTournament: CreateTournamentDto) {
@@ -48,5 +52,25 @@ export class TournamentService {
     });
 
     return newTournament;
+  }
+
+  async updateTournament(id: string, data: UpdateTournamentDto) {
+    const tournament = await this.prisma.tournament.findUnique({
+      where: { id },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException(`Tournament with ID ${id} not found`);
+    }
+
+    const updateTournament = await this.prisma.tournament.update({
+      where: { id },
+      data: {
+        ...data,
+        startDate: data.startDate ? new Date(data.startDate) : undefined,
+      },
+    });
+
+    return updateTournament;
   }
 }
