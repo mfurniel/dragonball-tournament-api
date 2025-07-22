@@ -27,4 +27,11 @@ export class TournamentService {
 
     return response;
   }
+
+  async getTournament(id: string) {
+    const data = await this.prisma.tournament.findUnique({
+      where: { id },
+    });
+    return data;
+  }
 }
