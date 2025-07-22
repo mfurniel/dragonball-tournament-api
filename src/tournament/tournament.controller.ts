@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -64,5 +65,14 @@ export class TournamentController {
     @Body() dataTournament: UpdateTournamentDto,
   ) {
     return this.tournamentService.updateTournament(id, dataTournament);
+  }
+
+  @Delete('/:id')
+  @ApiOperation({ summary: 'Delete Tournament for ID' })
+  @FeatureFlag('FEATURE_TOURNAMENTS_DELETE_TOURNAMENT')
+  @UseGuards(FeatureFlagGuard)
+  @UseInterceptors(ApiFormatter)
+  deleteTournament(@Param('id') id: string) {
+    return this.tournamentService.deleteTournament(id);
   }
 }

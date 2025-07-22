@@ -73,4 +73,18 @@ export class TournamentService {
 
     return updateTournament;
   }
+
+  async deleteTournament(id: string) {
+    const tournament = await this.prisma.tournament.findUnique({
+      where: { id },
+    });
+
+    if (!tournament) {
+      throw new NotFoundException(`Tournament with ID ${id} not found`);
+    }
+
+    return this.prisma.tournament.delete({
+      where: { id },
+    });
+  }
 }
