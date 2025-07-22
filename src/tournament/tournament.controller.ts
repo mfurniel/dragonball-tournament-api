@@ -1,7 +1,9 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
+  Post,
   Query,
   UseGuards,
   UseInterceptors,
@@ -13,6 +15,7 @@ import { PaginationInterceptor } from '../common/pagination/pagination.intercept
 import { FeatureFlagGuard } from '../common/features-flags/feature-flag.guard';
 import { FeatureFlag } from '../common/features-flags/feature-flag.decorator';
 import { ApiTags, ApiOperation, ApiOkResponse } from '@nestjs/swagger';
+import { CreateTournamentDto } from './dto/create-tournament.dto';
 @ApiTags('Tournaments')
 @Controller('tournaments')
 export class TournamentController {
@@ -37,5 +40,14 @@ export class TournamentController {
   @UseInterceptors(ApiFormatter, PaginationInterceptor)
   getTournament(@Param('id') id: string) {
     return this.tournamentService.getTournament(id);
+  }
+
+  @Post('/')
+  @ApiOperation({ summary: 'Create Tournament' })
+  @FeatureFlag('FEATURE_TOURNAMENTS_CREATE_TOURNAMENT')
+  @UseGuards(FeatureFlagGuard)
+  @UseInterceptors(ApiFormatter)
+  createTournament(@Body() dataTournament: CreateTournamentDto) {
+    return this.tournamentService.createTournament(dataTournament);
   }
 }

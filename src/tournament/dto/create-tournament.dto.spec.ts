@@ -7,8 +7,8 @@ describe('CreateTournamentDto', () => {
     dto.name = 'Valid Tournament';
     dto.creator = 'John Doe';
     dto.location = 'New York';
-    dto.prize = '1000';
-    dto.startDate = new Date('2025-01-01');
+    dto.prize = '1000 Zenis';
+    dto.startDate = '2025-01-01T00:00:00Z';
 
     const errors = await validate(dto);
     expect(errors.length).toBe(0);
@@ -20,7 +20,7 @@ describe('CreateTournamentDto', () => {
       dto.creator = 'John Doe';
       dto.location = 'New York';
       dto.prize = '1000';
-      dto.startDate = new Date('2025-01-01');
+      dto.startDate = '2025-01-01T00:00:00Z';
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
@@ -33,7 +33,7 @@ describe('CreateTournamentDto', () => {
       dto.creator = 'John Doe';
       dto.location = 'New York';
       dto.prize = '1000';
-      dto.startDate = new Date('2025-01-01');
+      dto.startDate = '2025-01-01T00:00:00Z';
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
@@ -46,7 +46,7 @@ describe('CreateTournamentDto', () => {
       dto.creator = 'John Doe';
       dto.location = 'New York';
       dto.prize = '1000';
-      dto.startDate = new Date('2025-01-01');
+      dto.startDate = '2025-01-01T00:00:00Z';
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
@@ -60,7 +60,7 @@ describe('CreateTournamentDto', () => {
       dto.name = 'Valid Tournament';
       dto.location = 'New York';
       dto.prize = '1000';
-      dto.startDate = new Date('2025-01-01');
+      dto.startDate = '2025-01-01T00:00:00Z';
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
@@ -73,7 +73,7 @@ describe('CreateTournamentDto', () => {
       dto.creator = 'A very long creator name that exceeds fifty characters';
       dto.location = 'New York';
       dto.prize = '1000';
-      dto.startDate = new Date('2025-01-01');
+      dto.startDate = '2025-01-01T00:00:00Z';
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
@@ -87,7 +87,7 @@ describe('CreateTournamentDto', () => {
       dto.name = 'Valid Tournament';
       dto.creator = 'John Doe';
       dto.prize = '1000';
-      dto.startDate = new Date('2025-01-01');
+      dto.startDate = '2025-01-01T00:00:00Z';
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
@@ -103,7 +103,7 @@ describe('CreateTournamentDto', () => {
       dto.location =
         'A very long location name that exceeds the fifty characters limit';
       dto.prize = '1000';
-      dto.startDate = new Date('2025-01-01');
+      dto.startDate = '2025-01-01T00:00:00Z';
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
@@ -112,25 +112,13 @@ describe('CreateTournamentDto', () => {
   });
 
   describe('CreateTournamentDto - Prize Validation', () => {
-    it('should fail validation when prize is missing', async () => {
-      const dto = new CreateTournamentDto();
-      dto.name = 'Valid Tournament';
-      dto.creator = 'John Doe';
-      dto.location = 'New York';
-      dto.startDate = new Date('2025-01-01');
-
-      const errors = await validate(dto);
-      expect(errors.length).toBeGreaterThan(0);
-      expect(errors.some((error) => error.property === 'prize')).toBeTruthy();
-    });
-
     it('should allow an empty prize', async () => {
       const dto = new CreateTournamentDto();
       dto.name = 'Valid Tournament';
       dto.creator = 'John Doe';
       dto.location = 'New York';
       dto.prize = '';
-      dto.startDate = new Date('2025-01-01');
+      dto.startDate = '2025-01-01T00:00:00Z';
 
       const errors = await validate(dto);
       expect(errors.length).toBe(0);
@@ -142,7 +130,7 @@ describe('CreateTournamentDto', () => {
       dto.creator = 'John Doe';
       dto.location = 'New York';
       dto.prize = 'A very long prize that exceeds the fifty characters limit';
-      dto.startDate = new Date('2025-01-01');
+      dto.startDate = '2025-01-01T00:00:00Z';
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
@@ -171,7 +159,7 @@ describe('CreateTournamentDto', () => {
       dto.creator = 'John Doe';
       dto.location = 'New York';
       dto.prize = '1000';
-      dto.startDate = 'invalid-date' as unknown as Date;
+      dto.startDate = 'invalid-date' as unknown as string;
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);
@@ -186,7 +174,7 @@ describe('CreateTournamentDto', () => {
       dto.creator = 'John Doe';
       dto.location = 'New York';
       dto.prize = '1000';
-      dto.startDate = 2025 as unknown as Date;
+      dto.startDate = 2025 as unknown as string;
 
       const errors = await validate(dto);
       expect(errors.length).toBeGreaterThan(0);

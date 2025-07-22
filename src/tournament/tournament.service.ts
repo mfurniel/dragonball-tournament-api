@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaginationRequestDto } from '../common/pagination/dto/pagination-request.dto';
 import { TournamentsGetAllDto } from '../common/pagination/dto/get-all-responses/tournaments-get-all.dto';
+import { CreateTournamentDto } from './dto/create-tournament.dto';
 
 @Injectable()
 export class TournamentService {
@@ -33,5 +34,19 @@ export class TournamentService {
       where: { id },
     });
     return data;
+  }
+
+  async createTournament(dataTournament: CreateTournamentDto) {
+    const newTournament = await this.prisma.tournament.create({
+      data: {
+        name: dataTournament.name,
+        creator: dataTournament.creator,
+        location: dataTournament.location,
+        prize: dataTournament.prize,
+        startDate: new Date(dataTournament.startDate),
+      },
+    });
+
+    return newTournament;
   }
 }
