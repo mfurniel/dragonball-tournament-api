@@ -23,3 +23,12 @@ model Tournament {
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(6)
 }
+
+model Warrior {
+  id         String   @id @default(uuid())
+  name       String   @db.VarChar(100)
+  race       String   @db.VarChar(50)
+  powerLevel Int
+  createdAt  DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(6)
+}

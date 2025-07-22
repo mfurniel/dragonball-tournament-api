@@ -1,0 +1,11 @@
+-- CreateTable
+CREATE TABLE "Warrior" (
+    "id" TEXT NOT NULL,
+    "name" VARCHAR(100) NOT NULL,
+    "race" VARCHAR(50) NOT NULL,
+    "powerLevel" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Warrior_pkey" PRIMARY KEY ("id")
+);
