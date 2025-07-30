@@ -4,6 +4,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { PaginationRequestDto } from '../common/pagination/dto/pagination-request.dto';
 import { TournamentsGetAllDto } from '../common/pagination/dto/get-all-responses/tournaments-get-all.dto';
 import { Tournament } from '@prisma/client';
+import { TournamentDto } from './dto/tournament.dto';
+import { plainToInstance } from 'class-transformer';
 
 describe('TournamentService', () => {
   let service: TournamentService;
@@ -47,6 +49,8 @@ describe('TournamentService', () => {
       updatedAt: new Date(),
     },
   ] as Tournament[];
+
+  const mockTournamentsDto = plainToInstance(TournamentDto, mockTournaments);
 
   const mockTotalCount = 3;
   const defaultPaginationDto: PaginationRequestDto = {};
@@ -113,7 +117,7 @@ describe('TournamentService', () => {
       const result = await service.getAllTournaments(defaultPaginationDto);
 
       expect(result).toBeInstanceOf(TournamentsGetAllDto);
-      expect(result.tournaments).toEqual(mockTournaments);
+      expect(result.tournaments).toEqual(mockTournamentsDto);
       expect(result.totalCount).toEqual(mockTotalCount);
       expect(result).toHaveProperty('itemsPage');
     });
@@ -139,7 +143,7 @@ describe('TournamentService', () => {
       const result = await service.getAllTournaments(paginationDto);
 
       expect(result).toBeInstanceOf(TournamentsGetAllDto);
-      expect(result.tournaments).toEqual([mockTournaments[0]]);
+      expect(result.tournaments).toEqual([mockTournamentsDto[0]]);
       expect(result.totalCount).toBe(mockTotalCount);
       expect(result).toHaveProperty('itemsPage');
       expect(result.itemsPage).toBe(1);

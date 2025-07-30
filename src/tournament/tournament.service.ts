@@ -4,6 +4,8 @@ import { PaginationRequestDto } from '../common/pagination/dto/pagination-reques
 import { TournamentsGetAllDto } from '../common/pagination/dto/get-all-responses/tournaments-get-all.dto';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { UpdateTournamentDto } from './dto/update-tournament.dto';
+import { TournamentDto } from './dto/tournament.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class TournamentService {
@@ -22,12 +24,15 @@ export class TournamentService {
       this.prisma.tournament.count(),
     ]);
 
-    const response = new TournamentsGetAllDto();
-    response.tournaments = data;
-    response.itemsPage = data.length;
-    response.totalCount = count;
+    const tournaments = plainToInstance(TournamentDto, data, {
+      excludeExtraneousValues: true,
+    });
 
-    return response;
+    return new TournamentsGetAllDto({
+      tournaments,
+      itemsPage: tournaments.length,
+      totalCount: count,
+    });
   }
 
   async getTournament(id: string) {

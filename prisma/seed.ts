@@ -34,11 +34,61 @@ async function main() {
     },
   ];
 
+  const warriors = [
+    {
+      name: 'Goku',
+      race: 'Saiyan',
+      powerLevel: 9000,
+    },
+    {
+      name: 'Vegeta',
+      race: 'Saiyan',
+      powerLevel: 18000,
+    },
+    {
+      name: 'Piccolo',
+      race: 'Namekian',
+      powerLevel: 3000,
+    },
+    {
+      name: 'Krillin',
+      race: 'Human',
+      powerLevel: 1500,
+    },
+    {
+      name: 'Frieza',
+      race: 'Frieza Race',
+      powerLevel: 15000,
+    },
+    {
+      name: 'Cell',
+      race: 'Bio-Android',
+      powerLevel: 3000000000,
+    },
+    {
+      name: 'Majin Buu',
+      race: 'Majin',
+      powerLevel: 30000000000,
+    },
+    {
+      name: 'Gohan',
+      race: 'Saiyan-Human Hybrid',
+      powerLevel: 40000000000,
+    },
+  ];
+
   for (const tournament of tournaments) {
     await prisma.tournament.create({
       data: tournament,
     });
   }
+
+  for (const warrior of warriors) {
+    await prisma.warrior.create({
+      data: warrior,
+    });
+  }
+
   console.log('Seed data inserted successfully!');
 }
 
