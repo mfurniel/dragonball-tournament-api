@@ -40,12 +40,24 @@ export class WarriorService {
     return warrior;
   }
 
-  update(id: number, updateWarriorDto: UpdateWarriorDto) {
-    console.log(updateWarriorDto);
-    return `This action updates a #${id} warrior`;
+  async update(id: string, updateWarriorDto: UpdateWarriorDto) {
+    const warrior = await this.prisma.warrior.findUnique({
+      where: { id },
+    });
+
+    if (!warrior) {
+      throw new NotFoundException(`Tournament with ID ${id} not found`);
+    }
+
+    return this.prisma.warrior.update({
+      where: { id },
+      data: {
+        ...updateWarriorDto,
+      },
+    });
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} warrior`;
   }
 }

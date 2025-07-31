@@ -55,12 +55,12 @@ export class WarriorController {
   @Patch(':id')
   @FeatureFlag('FEATURE_WARRIORS_UPDATE_WARRIOR')
   update(@Param('id') id: string, @Body() updateWarriorDto: UpdateWarriorDto) {
-    return this.warriorService.update(+id, updateWarriorDto);
+    return this.warriorService.update(id, updateWarriorDto);
   }
 
   @Delete(':id')
   @FeatureFlag('FEATURE_WARRIORS_DELETE_WARRIOR')
   remove(@Param('id') id: string) {
-    return this.warriorService.remove(+id);
+    return this.warriorService.remove(id);
   }
 }
