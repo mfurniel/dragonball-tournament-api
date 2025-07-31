@@ -22,18 +22,20 @@ import { FeatureFlagGuard } from '../common/features-flags/feature-flag.guard';
 import { FeatureFlag } from '../common/features-flags/feature-flag.decorator';
 
 @Controller('warrior')
+@UseInterceptors(ApiFormatter)
+@UseGuards(FeatureFlagGuard)
 export class WarriorController {
   constructor(private readonly warriorService: WarriorService) {}
 
   @Post()
+  @FeatureFlag('FEATURE_WARRIORS_CREATE_WARRIOR')
   create(@Body() createWarriorDto: CreateWarriorDto) {
     return this.warriorService.create(createWarriorDto);
   }
 
   @Get()
   @FeatureFlag('FEATURE_WARRIORS_GET_ALL_WARRIORS')
-  @UseGuards(FeatureFlagGuard)
-  @UseInterceptors(ApiFormatter, PaginationInterceptor)
+  @UseInterceptors(PaginationInterceptor)
   async findAll(@Query() paginationRequestDto: PaginationRequestDto) {
     const data = await this.warriorService.findAll(paginationRequestDto);
 
@@ -45,16 +47,19 @@ export class WarriorController {
   }
 
   @Get(':id')
+  @FeatureFlag('FEATURE_WARRIORS_GET_WARRIOR')
   findOne(@Param('id') id: string) {
-    return this.warriorService.findOne(+id);
+    return this.warriorService.findOne(id);
   }
 
   @Patch(':id')
+  @FeatureFlag('FEATURE_WARRIORS_UPDATE_WARRIOR')
   update(@Param('id') id: string, @Body() updateWarriorDto: UpdateWarriorDto) {
     return this.warriorService.update(+id, updateWarriorDto);
   }
 
   @Delete(':id')
+  @FeatureFlag('FEATURE_WARRIORS_DELETE_WARRIOR')
   remove(@Param('id') id: string) {
     return this.warriorService.remove(+id);
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateWarriorDto } from './dto/create-warrior.dto';
 import { UpdateWarriorDto } from './dto/update-warrior.dto';
 import { PaginationRequestDto } from 'src/common/pagination/dto/pagination-request.dto';
@@ -8,9 +8,15 @@ import { PrismaService } from '../prisma/prisma.service';
 export class WarriorService {
   constructor(private prisma: PrismaService) {}
 
-  create(createWarriorDto: CreateWarriorDto) {
-    console.log(createWarriorDto);
-    return 'This action adds a new warrior';
+  async create(createWarriorDto: CreateWarriorDto) {
+    const newWarrior = await this.prisma.warrior.create({
+      data: {
+        name: createWarriorDto.name,
+        race: createWarriorDto.race,
+        powerLevel: createWarriorDto.powerLevel,
+      },
+    });
+    return newWarrior;
   }
 
   async findAll(paginationRequestDto: PaginationRequestDto) {
@@ -24,8 +30,14 @@ export class WarriorService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} warrior`;
+  async findOne(id: string) {
+    const warrior = await this.prisma.warrior.findUnique({
+      where: { id },
+    });
+    if (!warrior) {
+      throw new NotFoundException(`Warrior with ID ${id} not found`);
+    }
+    return warrior;
   }
 
   update(id: number, updateWarriorDto: UpdateWarriorDto) {
