@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, FightStatus } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -63,17 +63,17 @@ async function main() {
     {
       name: 'Cell',
       race: 'Bio-Android',
-      powerLevel: 3000000000,
+      powerLevel: 3000,
     },
     {
       name: 'Majin Buu',
       race: 'Majin',
-      powerLevel: 30000000000,
+      powerLevel: 3000,
     },
     {
       name: 'Gohan',
       race: 'Saiyan-Human Hybrid',
-      powerLevel: 40000000000,
+      powerLevel: 4000,
     },
   ];
 
@@ -87,6 +87,69 @@ async function main() {
     await prisma.warrior.create({
       data: warrior,
     });
+  }
+
+  // Obtener torneos y guerreros desde la DB
+  const dbTournaments = await prisma.tournament.findMany();
+  const dbWarriors = await prisma.warrior.findMany();
+
+  // Crear un mapa rápido para facilitar acceso por nombre
+  const tournamentMap = Object.fromEntries(
+    dbTournaments.map((t) => [t.name, t]),
+  );
+  const warriorMap = Object.fromEntries(dbWarriors.map((w) => [w.name, w]));
+
+  // Definir un tipo para los datos de las peleas para un tipado explícito
+  type FightSeedData = {
+    tournamentId: string;
+    warrior1Id: string;
+    warrior2Id: string;
+    winnerId?: string; // 'winnerId' es opcional porque la pelea en progreso no tiene uno
+    creator: string;
+    description: string;
+    startTime: Date;
+    endTime: Date | null;
+    status: FightStatus;
+  };
+
+  const fights: FightSeedData[] = [
+    // Aplicamos el tipo aquí
+    {
+      tournamentId: tournamentMap['World Martial Arts Tournament'].id,
+      warrior1Id: warriorMap['Goku'].id,
+      warrior2Id: warriorMap['Krillin'].id,
+      winnerId: warriorMap['Goku'].id,
+      creator: 'Master Roshi',
+      description: 'Goku vs Krillin en las semifinales del torneo clásico.',
+      startTime: new Date('0750-01-10T10:00:00Z'),
+      endTime: new Date('0750-01-10T10:30:00Z'),
+      status: FightStatus.FINISHED,
+    },
+    {
+      tournamentId: tournamentMap['Cell Games'].id,
+      warrior1Id: warriorMap['Gohan'].id,
+      warrior2Id: warriorMap['Cell'].id,
+      winnerId: warriorMap['Gohan'].id,
+      creator: 'Kami',
+      description: 'La icónica pelea final entre Gohan y Cell.',
+      startTime: new Date('0767-01-15T15:00:00Z'),
+      endTime: new Date('0767-01-15T15:45:00Z'),
+      status: FightStatus.FINISHED,
+    },
+    {
+      tournamentId: tournamentMap['Tournament of Power'].id,
+      warrior1Id: warriorMap['Frieza'].id,
+      warrior2Id: warriorMap['Jiren']?.id || warriorMap['Vegeta'].id, // fallback si no tienes a Jiren
+      creator: 'Zeno',
+      description: 'Una pelea intensa en el mundo del vacío.',
+      startTime: new Date('0780-01-01T12:00:00Z'),
+      endTime: null,
+      status: FightStatus.IN_PROGRESS,
+    },
+  ];
+
+  for (const fight of fights) {
+    await prisma.fight.create({ data: fight });
   }
 
   console.log('Seed data inserted successfully!');

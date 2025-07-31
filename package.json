@@ -24,7 +24,8 @@
     "prisma:seed": "ts-node prisma/seed.ts",
     "prisma:studio": "npx prisma studio",
     "check:skips": "grep -rE 'it\\.skip|describe\\.skip|test\\.skip' src/",
-    "migrate:dev:docker": "docker exec -it dragonball-tournament-api npx prisma migrate dev --name"
+    "migrate:dev:docker": "docker exec -it dragonball-tournament-api npx prisma migrate dev --name",
+    "seed:dev:docker": "docker exec -it dragonball-tournament-api npx ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
