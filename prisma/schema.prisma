@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
@@ -13,15 +13,18 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model Tournament {
-  id       String  @id @default(uuid())
-  name     String  @db.VarChar(50)
-  creator  String  @db.VarChar(50)
-  location String  @db.VarChar(50)
-  prize    String? @db.VarChar(50)
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(50)
+  creator   String   @db.VarChar(50)
+  location  String   @db.VarChar(50)
+  prize     String?  @db.VarChar(50)
   startDate DateTime
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(6)
+
+  fights Fight[]
 }
 
 model Warrior {
@@ -30,5 +33,37 @@ model Warrior {
   race       String   @db.VarChar(50)
   powerLevel Int
   createdAt  DateTime @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime @default(now()) @updatedAt @db.Timestamp(6)
+
+  warrior1 Fight[] @relation("Warrior1")
+  warrior2 Fight[] @relation("Warrior2")
+  winner   Fight[] @relation("Winner")
+}
+
+model Fight {
+  id           String  @id @default(uuid())
+  tournamentId String
+  warrior1Id   String?
+  warrior2Id   String?
+  winnerId     String?
+  description  String? @db.VarChar(255)
+
+  creator   String?     @db.VarChar(50)
+  startTime DateTime?
+  endTime   DateTime?
+  status    FightStatus @default(PENDING)
+
+  createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(6)
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id])
+  warrior1   Warrior?   @relation("Warrior1", fields: [warrior1Id], references: [id])
+  warrior2   Warrior?   @relation("Warrior2", fields: [warrior2Id], references: [id])
+  winner     Warrior?   @relation("Winner", fields: [winnerId], references: [id])
+}
+
+enum FightStatus {
+  PENDING
+  IN_PROGRESS
+  FINISHED
 }
