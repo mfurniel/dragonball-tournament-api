@@ -57,7 +57,17 @@ export class WarriorService {
     });
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} warrior`;
+  async remove(id: string) {
+    const warrior = await this.prisma.warrior.findUnique({
+      where: { id },
+    });
+
+    if (!warrior) {
+      throw new NotFoundException(`Tournament with ID ${id} not found`);
+    }
+
+    return this.prisma.warrior.delete({
+      where: { id },
+    });
   }
 }
