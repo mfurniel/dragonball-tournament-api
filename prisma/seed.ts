@@ -1,4 +1,5 @@
 import { PrismaClient, FightStatus } from '@prisma/client';
+import { encrypt } from '../src/auth/libs/bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -83,9 +84,24 @@ async function main() {
     });
   }
 
+  // Crear usuarios y asociarlos a los warriors
   for (const warrior of warriors) {
+    const username = warrior.name.toLowerCase();
+    const user = await prisma.user.create({
+      data: {
+        username,
+        password: await encrypt('Concepcion_2025'),
+        lastLoginAt: new Date(),
+      },
+    });
+
     await prisma.warrior.create({
-      data: warrior,
+      data: {
+        name: warrior.name,
+        race: warrior.race,
+        powerLevel: warrior.powerLevel,
+        userId: user.id,
+      },
     });
   }
 
@@ -99,12 +115,11 @@ async function main() {
   );
   const warriorMap = Object.fromEntries(dbWarriors.map((w) => [w.name, w]));
 
-  // Definir un tipo para los datos de las peleas para un tipado explícito
   type FightSeedData = {
     tournamentId: string;
     warrior1Id: string;
     warrior2Id: string;
-    winnerId?: string; // 'winnerId' es opcional porque la pelea en progreso no tiene uno
+    winnerId?: string;
     creator: string;
     description: string;
     startTime: Date;
@@ -113,7 +128,6 @@ async function main() {
   };
 
   const fights: FightSeedData[] = [
-    // Aplicamos el tipo aquí
     {
       tournamentId: tournamentMap['World Martial Arts Tournament'].id,
       warrior1Id: warriorMap['Goku'].id,
