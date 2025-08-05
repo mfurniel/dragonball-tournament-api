@@ -15,11 +15,14 @@ datasource db {
 }
 
 model Tournament {
-  id        String   @id @default(uuid())
-  name      String   @db.VarChar(50)
-  creator   String   @db.VarChar(50)
-  location  String   @db.VarChar(50)
-  prize     String?  @db.VarChar(50)
+  id       String  @id @default(uuid())
+  name     String  @db.VarChar(50)
+  location String  @db.VarChar(50)
+  prize    String? @db.VarChar(50)
+
+  creatorId String 
+  creator   User   @relation(fields: [creatorId], references: [id])
+
   startDate DateTime
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(6)
@@ -35,8 +38,8 @@ model Warrior {
   createdAt  DateTime @default(now()) @db.Timestamp(6)
   updatedAt  DateTime @default(now()) @updatedAt @db.Timestamp(6)
 
-  userId String  @unique
-  user   User    @relation(fields: [userId], references: [id])
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
 
   warrior1 Fight[] @relation("Warrior1")
   warrior2 Fight[] @relation("Warrior2")
@@ -72,16 +75,17 @@ enum FightStatus {
 }
 
 model User {
-  id        String  @id @default(uuid())
-  username  String   @unique @db.VarChar(50)
-  password  String
-  role      UserRole @default(USER)
-  isActive  Boolean @default(true)
-  warrior     Warrior?  // Relación inversa
+  id          String       @id @default(uuid())
+  username    String       @unique @db.VarChar(50)
+  password    String
+  role        UserRole     @default(USER)
+  isActive    Boolean      @default(true)
+  warrior     Warrior?
+  tournaments Tournament[]
 
   lastLoginAt DateTime
-  createdAt DateTime @default(now()) @db.Timestamp(6)
-  updatedAt DateTime @default(now()) @updatedAt @db.Timestamp(6)
+  createdAt   DateTime @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime @default(now()) @updatedAt @db.Timestamp(6)
 }
 
 enum UserRole {
