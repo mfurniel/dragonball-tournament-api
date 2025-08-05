@@ -9,7 +9,7 @@ import {
 
 export class CreateUserDto {
   @IsString()
-  @Length(6, 50)
+  @Length(4, 50)
   username: string;
 
   @IsString()
