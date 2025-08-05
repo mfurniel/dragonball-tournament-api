@@ -12,6 +12,7 @@ export class WarriorService {
     const newWarrior = await this.prisma.warrior.create({
       data: {
         name: createWarriorDto.name,
+        userId: createWarriorDto.userId,
         race: createWarriorDto.race,
         powerLevel: createWarriorDto.powerLevel,
       },

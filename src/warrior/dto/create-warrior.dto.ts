@@ -9,6 +9,10 @@ export class CreateWarriorDto {
   name: string;
 
   @IsString()
+  @IsNotEmpty()
+  userId: string;
+
+  @IsString()
   @MaxLength(50)
   @ApiProperty({ example: 'Sayan' })
   race: string;

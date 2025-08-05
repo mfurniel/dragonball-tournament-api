@@ -48,8 +48,14 @@ export class WarriorController {
 
   @Get(':id')
   @FeatureFlag('FEATURE_WARRIORS_GET_WARRIOR')
-  findOne(@Param('id') id: string) {
-    return this.warriorService.findOne(id);
+  async findOne(@Param('id') id: string): Promise<WarriorDto> {
+    const data = await this.warriorService.findOne(id);
+
+    const warrior = plainToInstance(WarriorDto, data, {
+      excludeExtraneousValues: true,
+    });
+
+    return warrior;
   }
 
   @Patch(':id')

@@ -25,4 +25,8 @@ export class WarriorDto {
   @ApiProperty()
   @Expose()
   updatedAt: Date;
+
+  @ApiProperty()
+  @Expose()
+  userId: string;
 }
