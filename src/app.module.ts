@@ -4,9 +4,15 @@ import { WarriorModule } from './warrior/warrior.module';
 import { FightModule } from './fight/fight.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { validate } from './common/validation/enviroment-variables';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate,
+    }),
     TournamentsModule,
     WarriorModule,
     FightModule,
