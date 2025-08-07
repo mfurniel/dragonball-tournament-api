@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthGuard } from './guards/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { FeatureFlagsModule } from 'src/common/features-flags/feature-flags.module';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { FeatureFlagsModule } from 'src/common/features-flags/feature-flags.modu
     UsersService,
     AuthGuard,
     { provide: APP_GUARD, useClass: AuthGuard },
+    JwtStrategy,
   ],
 })
 export class AuthModule {}

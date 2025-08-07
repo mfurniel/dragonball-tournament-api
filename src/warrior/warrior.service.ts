@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateWarriorDto } from './dto/create-warrior.dto';
 import { UpdateWarriorDto } from './dto/update-warrior.dto';
 import { PaginationRequestDto } from 'src/common/pagination/dto/pagination-request.dto';
@@ -9,13 +14,28 @@ export class WarriorService {
   constructor(private prisma: PrismaService) {}
 
   async create(createWarriorDto: CreateWarriorDto) {
+    const { userId } = createWarriorDto;
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with id ${userId} does not exist`);
+    }
+
+    const existingWarrior = await this.prisma.warrior.findUnique({
+      where: { userId },
+    });
+
+    if (existingWarrior) {
+      throw new ConflictException(
+        `User with id ${userId} already has a warrior`,
+      );
+    }
+
     const newWarrior = await this.prisma.warrior.create({
-      data: {
-        name: createWarriorDto.name,
-        userId: createWarriorDto.userId,
-        race: createWarriorDto.race,
-        powerLevel: createWarriorDto.powerLevel,
-      },
+      data: createWarriorDto,
     });
     return newWarrior;
   }
@@ -58,17 +78,23 @@ export class WarriorService {
     });
   }
 
-  async remove(id: string) {
+  async remove(warriorId: string, userId: string) {
     const warrior = await this.prisma.warrior.findUnique({
-      where: { id },
+      where: { id: warriorId },
     });
 
     if (!warrior) {
-      throw new NotFoundException(`Tournament with ID ${id} not found`);
+      throw new NotFoundException(`Tournament with ID ${warriorId} not found`);
+    }
+
+    if (warrior.userId !== userId) {
+      throw new ForbiddenException(
+        `You are not allowed to delete this warrior`,
+      );
     }
 
     return this.prisma.warrior.delete({
-      where: { id },
+      where: { id: warriorId },
     });
   }
 }

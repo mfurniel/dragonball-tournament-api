@@ -8,6 +8,10 @@ export class WarriorDto {
 
   @ApiProperty()
   @Expose()
+  userId: string;
+
+  @ApiProperty()
+  @Expose()
   name: string;
 
   @ApiProperty()
@@ -25,8 +29,4 @@ export class WarriorDto {
   @ApiProperty()
   @Expose()
   updatedAt: Date;
-
-  @ApiProperty()
-  @Expose()
-  userId: string;
 }

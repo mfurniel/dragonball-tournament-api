@@ -20,6 +20,9 @@ import { ApiFormatter } from '../common/api-responses/api-formatter.interceptor'
 import { PaginationInterceptor } from '../common/pagination/pagination.interceptor';
 import { FeatureFlagGuard } from '../common/features-flags/feature-flag.guard';
 import { FeatureFlag } from '../common/features-flags/feature-flag.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Request } from '@nestjs/common';
+import { AuthenticatedRequest } from '../common/interfaces/authenticated-request.interface';
 
 @Controller('warrior')
 @UseInterceptors(ApiFormatter)
@@ -66,7 +69,8 @@ export class WarriorController {
 
   @Delete(':id')
   @FeatureFlag('FEATURE_WARRIORS_DELETE_WARRIOR')
-  remove(@Param('id') id: string) {
-    return this.warriorService.remove(id);
+  @UseGuards(JwtAuthGuard)
+  remove(@Param('id') id: string, @Request() req: AuthenticatedRequest) {
+    return this.warriorService.remove(id, req.user.userId);
   }
 }
