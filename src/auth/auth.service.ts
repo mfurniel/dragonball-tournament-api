@@ -38,8 +38,8 @@ export class AuthService {
         username: correctUser.username,
         role: correctUser.role,
       };
-      const acces_token = await this.jwtService.signAsync(payload);
-      return { acces_token };
+      const access_token = await this.jwtService.signAsync(payload);
+      return { access_token };
     } catch (error) {
       if (error instanceof BadRequestException) {
         throw error;
