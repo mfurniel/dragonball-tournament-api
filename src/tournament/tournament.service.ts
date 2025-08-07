@@ -20,12 +20,21 @@ export class TournamentService {
         skip,
         take: limit,
         orderBy: { id: order },
+        include: {
+          creator: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
+        },
       }),
       this.prisma.tournament.count(),
     ]);
 
     const tournaments = plainToInstance(TournamentDto, data, {
       excludeExtraneousValues: true,
+      enableImplicitConversion: true,
     });
 
     return new TournamentsGetAllDto({
@@ -38,18 +47,32 @@ export class TournamentService {
   async getTournament(id: string) {
     const tournament = await this.prisma.tournament.findUnique({
       where: { id },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
     });
+
     if (!tournament) {
       throw new NotFoundException(`Tournament with ID ${id} not found`);
     }
-    return tournament;
+
+    const tournamentFormat = plainToInstance(TournamentDto, tournament, {
+      excludeExtraneousValues: true,
+      enableImplicitConversion: true,
+    });
+    return tournamentFormat;
   }
 
   async createTournament(dataTournament: CreateTournamentDto) {
     const newTournament = await this.prisma.tournament.create({
       data: {
         name: dataTournament.name,
-        creator: dataTournament.creator,
+        creatorId: dataTournament.creatorId,
         location: dataTournament.location,
         prize: dataTournament.prize,
         startDate: new Date(dataTournament.startDate),

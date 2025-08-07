@@ -9,11 +9,6 @@ export class UpdateTournamentDto {
   @IsOptional()
   @IsString()
   @MaxLength(50)
-  creator?: string;
-
-  @IsOptional()
-  @IsString()
-  @MaxLength(50)
   location?: string;
 
   @IsOptional()
