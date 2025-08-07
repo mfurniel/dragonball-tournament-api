@@ -14,11 +14,11 @@ export class CreateTournamentDto {
   @MaxLength(50)
   name: string;
 
-  @ApiProperty({ example: 'Goku' })
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @MaxLength(50)
-  creator: string;
+  creatorId: string;
 
   @ApiProperty({ example: 'Namek' })
   @IsString()
